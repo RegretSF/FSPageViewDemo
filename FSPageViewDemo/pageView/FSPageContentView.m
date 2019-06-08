@@ -26,6 +26,7 @@
 @implementation FSPageContentView {
     CGFloat startOffsetX;
     BOOL isForbidScrollDelegate;
+    NSInteger currentIndex; //记录滚动到哪一个界面
 }
 //***********************************cellID***************************************//
 static NSString * const UICollectionViewCellID = @"UICollectionViewCellID";
@@ -181,7 +182,46 @@ static NSString * const UICollectionViewCellID = @"UICollectionViewCellID";
     isForbidScrollDelegate = YES;
     
     //2、滚动到正确的位置
-    CGFloat offsetX = index * self.collectionView.frame.size.width;
+    CGFloat w = self.collectionView.frame.size.width;
+    CGFloat offsetX = index * w;
+    
+    CATransitionType type;
+    if (index > currentIndex) {
+        type = kCATransitionFromRight;
+    }else {
+        type = kCATransitionFromLeft;
+    }
+    
+    [self transitionWithType:kCATransitionPush WithSubtype:type ForView:self.collectionView];
     [self.collectionView setContentOffset:CGPointMake(offsetX, 0)];
+    
+    currentIndex = index;
+}
+
+#pragma CATransition动画实现
+/**
+ * 动画效果实现
+ *
+ * @param type  动画的类型 在开头的枚举中有列举,比如 CurlDown//下翻页,CurlUp//上翻页
+ ,FlipFromLeft//左翻转,FlipFromRight//右翻转 等...
+ * @param subtype 动画执行的起始位置,上下左右
+ * @param view  哪个view执行的动画
+ */
+- (void)transitionWithType:(NSString *)type WithSubtype:(NSString *)subtype ForView:(UIView *)view {
+    
+    //创建CATransition对象
+    CATransition *animation = [CATransition animation];
+    //设置时间
+    animation.duration = 0.3;
+    //设置类型
+    animation.type = type;
+    //设置方向
+    animation.subtype = subtype;
+    //设置运动速度变化
+    CAMediaTimingFunction *a = [CAMediaTimingFunction functionWithControlPoints:0.7 :0.5 :0.3 :0.1];
+    animation.timingFunction = a;
+    
+    [view.layer addAnimation:animation forKey:@"animation"];
+
 }
 @end

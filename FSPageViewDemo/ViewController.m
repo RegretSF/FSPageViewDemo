@@ -40,7 +40,13 @@
         //2.确定所有的子控制器
         NSMutableArray *childVCs = [NSMutableArray array];
         for (int i=0; i<4; i++) {
+            
+            UIButton *btn = [[UIButton alloc] init];
+            [btn setTitle:[NSString stringWithFormat:@"第%d个控制器", i] forState:UIControlStateNormal];
+            btn.frame = CGRectMake(FSScreenW/2 - 50, FSScreenH/2 - 25, 100, 50);
+            
             UIViewController *childVC = [[UIViewController alloc] init];
+            [childVC.view addSubview:btn];
             childVC.view.backgroundColor = [UIColor colorWithRed:arc4random_uniform(256)/255.0 green:arc4random_uniform(256)/255.0 blue:arc4random_uniform(256)/255.0 alpha:1.0];
             [childVCs addObject:childVC];
         }
